@@ -5,44 +5,76 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((400,300))
 done = False
 is_blue = False
-x = 30
-y = 30
+
+
+
+
+class player_bot:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+        pygame.draw.circle(screen, (255,255,25),(x,y),20)
+        pygame.draw.rect(screen, (255,0,0),pygame.Rect(x- 20,y - 20,40,5))
+    def moveForwards(self):
+        self.y -= 3
+    def moveBackwards(self):
+        self.y += 3
+
+    def moveLeft(self):
+        self.x -= 3
+
+    def moveRight(self):
+        self.x += 3
+    def update(self):
+        pygame.draw.circle(screen, (255,255,25),(self.x,self.y),20)
+        pygame.draw.rect(screen, (255,0,0),pygame.Rect(self.x- 20,self.y - 20,40,5))
+
+
+class ball:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+        pygame.draw.circle(screen,(0,255,0),(x,y),10)
+    def update(self):
+        pygame.draw.circle(screen,(0,255,0),(self.x,self.y),10)
+test = player_bot(30,30)
+defaultBall = ball(30,30)
+
 
 while not done:
-	clock.tick(60)
-	for event in pygame.event.get():
+    clock.tick(60)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
 
-	    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-			is_blue = not is_blue 
-		if is_blue:
-			color = (0,128,255)
-		else:
-			color = (255,100,0)
-		pygame.draw.circle(screen, color, pygame.Rect(30,30,60,60))
-		if event.type == pygame.QUIT:
-			done = True
-
-	pressed = pygame.key.get_pressed()
-	if pressed[pygame.K_UP]:
-		y -=3
-	if pressed[pygame.K_DOWN]:
-		y +=3
-	if pressed[pygame.K_LEFT]:
-		x -= 3
-	if pressed[pygame.K_RIGHT]:
-		x +=3
-	if is_blue:
-		color = (0,128,255)
-	else:
-		color = (255,100,0)
-	
-	screen.fill((0, 0, 0))
-	pygame.draw.rect(screen,color, pygame.Rect(x,y,60,60))
-	
+    pressed = pygame.key.get_pressed() #placing pygame keypress into object
 
 
+#Movement control
+    if pressed[pygame.K_UP]:
+        test.moveForwards()
+    if pressed[pygame.K_DOWN]:
+        test.moveBackwards()
+    if pressed[pygame.K_LEFT]:
+        test.moveLeft()
+    if pressed[pygame.K_RIGHT]:
+        test.moveRight()
+    if is_blue:
+        color = (0,128,255)
+    else:
+        color = (255,100,0)
 
 
+#Refresh the screen and draw again
+    screen.fill((0, 0, 0))
+    defaultBall.update()
+    test.update()
+  #  pygame.draw.circle(screen, (0,255,0),(50,50),20)
+   # pygame.draw.circle(screen, (255,255,25),(x,y),20)
+    #pygame.draw.rect(screen, (255,0,0),pygame.Rect(x- 20,y - 20,40,5))
+    
 
-	pygame.display.flip()
+
+    pygame.display.flip()
+
 
