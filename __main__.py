@@ -1,3 +1,5 @@
+#NOTE TO SELF, TURN ALL ITEMS INTO SPRITES BECAUSE PYGAME.DRAW IS NOT AS WELL SUPPORTED AS PYGAME SPRITES
+
 import pygame
 
 pygame.init()
@@ -5,8 +7,6 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((400,300))
 done = False
 is_blue = False
-
-
 
 
 class player_bot:
@@ -28,6 +28,8 @@ class player_bot:
     def update(self):
         pygame.draw.circle(screen, (255,255,25),(self.x,self.y),20)
         pygame.draw.rect(screen, (255,0,0),pygame.Rect(self.x- 20,self.y - 20,40,5))
+    def rotateClockwise(self):
+        pygame.transform.rotate(self,10)
 
 
 class ball:
@@ -58,7 +60,7 @@ while not done:
     if pressed[pygame.K_LEFT]:
         test.moveLeft()
     if pressed[pygame.K_RIGHT]:
-        test.moveRight()
+        test.rotateClockwise()
     if is_blue:
         color = (0,128,255)
     else:
