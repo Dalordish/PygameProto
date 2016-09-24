@@ -1,16 +1,24 @@
 #NOTE TO SELF, TURN ALL ITEMS INTO SPRITES BECAUSE PYGAME.DRAW IS NOT AS WELL SUPPORTED AS PYGAME SPRITES
 
 import pygame
-
+import numpy as np
 pygame.init()
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((400,300))
+screen = pygame.display.set_mode((640,480))
 done = False
 is_blue = False
 
+#Using three wheels
+
+
 
 class player_bot:
+    
     def __init__(self,x,y):
+        self.const = np.matrix([ [np.sin(np.deg2rad(30)), np.sin(np.deg2rad(150)) , np.sin(np.deg2rad(270)) ] ,
+        [np.cos(np.deg2rad(30)),np.cos(np.deg2rad(150)), np.cos(np.deg2rad(270))], [1,1,1] ])
+
+        self.movementVector = [0,0,0]
         self.x = x
         self.y = y
         pygame.draw.circle(screen, (255,255,25),(x,y),20)
@@ -29,7 +37,23 @@ class player_bot:
         pygame.draw.circle(screen, (255,255,25),(self.x,self.y),20)
         pygame.draw.rect(screen, (255,0,0),pygame.Rect(self.x- 20,self.y - 20,40,5))
     def rotateClockwise(self):
-        pygame.transform.rotate(self,10)
+        pygame.transform.rotate(screen,10)
+
+    def moveMotA(self,speed):
+        self.movementVector[0] = speed
+    def moveMotB(self,speed):
+        self.movementVector[1] = speed
+    def moveMotC(self,speed):
+        self.movementVector[2] = speed
+
+    def resolvePosition(self):
+        print("---------------------------")
+        print(self.movementVector)
+        print(self.const)
+
+        moveXY = np.array(np.dot(np.matrix(self.movementVector) , self.const))[0]
+        self.x += int(moveXY[0])
+        self.y += int(moveXY[1])
 
 
 class ball:
@@ -54,19 +78,16 @@ while not done:
 
 #Movement control
     if pressed[pygame.K_UP]:
-        test.moveForwards()
+        test.moveMotA(2)
     if pressed[pygame.K_DOWN]:
-        test.moveBackwards()
+        test.moveMotC(2)
     if pressed[pygame.K_LEFT]:
-        test.moveLeft()
+        test.moveMotA(0)
+        test.moveMotC(0)
+        test.moveMotB(0)
     if pressed[pygame.K_RIGHT]:
-        test.rotateClockwise()
-    if is_blue:
-        color = (0,128,255)
-    else:
-        color = (255,100,0)
-
-
+        test.moveMotB(2)
+    test.resolvePosition()
 #Refresh the screen and draw again
     screen.fill((0, 0, 0))
     defaultBall.update()
